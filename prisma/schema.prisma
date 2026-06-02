@@ -1,13 +1,106 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  PENGAJAR
+  PESERTA
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DROPPED
+}
+
+model User {
+  id             String           @id @default(cuid())
+  nama           String
+  email          String           @unique
+  password       String
+  role           Role             @default(PESERTA)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  coursesCreated Course[]
+  enrollments    Enrollment[]
+  moduleProgress  ModuleProgress[]
+  taskSubmissions TaskSubmission[]
+}
+
+model Course {
+  id          String           @id @default(cuid())
+  judul       String
+  deskripsi   String
+  thumbnail   String?
+  isPublished Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  pengajarId  String
+  pengajar    User             @relation(fields: [pengajarId], references: [id])
+  modules     Module[]
+  enrollments Enrollment[]
+}
+
+model Module {
+  id              String           @id @default(cuid())
+  judul           String
+  urutan          Int
+  konten          String
+  quizPassword    String
+  taskInstruction String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  courseId        String
+  course          Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  moduleProgress  ModuleProgress[]
+  taskSubmissions TaskSubmission[]
+}
+
+model ModuleProgress {
+  id        String   @id @default(cuid())
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  moduleId  String
+  user      User     @relation(fields: [userId], references: [id])
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, moduleId])
+}
+
+model Enrollment {
+  id        String           @id @default(cuid())
+  status    EnrollmentStatus @default(ACTIVE)
+  progress  Int              @default(0)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  userId    String
+  courseId   String
+  user      User             @relation(fields: [userId], references: [id])
+  course    Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model TaskSubmission {
+  id           String   @id @default(cuid())
+  submissionUrl String
+  notes        String?
+  grade        Int?
+  feedback     String?
+  status       String   @default("PENDING")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String
+  moduleId     String
+  user         User     @relation(fields: [userId], references: [id])
+  module       Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, moduleId])
 }
