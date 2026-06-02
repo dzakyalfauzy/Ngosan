@@ -2,8 +2,10 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { decrypt } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 import LogoutButton from "./logout-button";
 import CourseList from "./course-list";
+import EnrolledCourses from "./enrolled-courses";
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
@@ -160,11 +162,30 @@ function PesertaPanel({ stats }: { stats: PesertaStats }) {
         <StatCard label="Progress Belajar" value={`${stats.progressRata}%`} icon="📊" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Widget title="Kelas Saya" description="Lanjutkan belajar dari kelas yang diikuti" />
-        <Widget title="Progress Belajar" description={`Rata-rata penyelesaian: ${stats.progressRata}%`} />
-        <Widget title="Tugas & Kuis" description="Kerjakan tugas dan kuis dari pengajar" />
+      {/* Quick Links */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Link
+          href="/dashboard/tugas"
+          className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-700 transition block"
+        >
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">📝 Tugas & Kuis</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Kerjakan tugas dan lihat nilai</p>
+        </Link>
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800">
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">📊 Progress Belajar</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Rata-rata: {stats.progressRata}%</p>
+        </div>
       </div>
+
+      {/* Kelas yang Diikuti */}
+      {stats.kelasDiikuti > 0 && (
+        <div>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
+            Kelas Saya
+          </h3>
+          <EnrolledCourses />
+        </div>
+      )}
 
       {/* Kelas Tersedia */}
       <div>
