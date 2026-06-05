@@ -84,15 +84,12 @@ export default async function DashboardPage() {
           <div className="flex items-center gap-3 mt-3">
             <span className="text-sm text-emerald-100">{user.email}</span>
             <span className="text-xs font-semibold bg-white/20 px-2.5 py-1 rounded-full">
-              {roleLabel[user.role] || user.role}
+              {roleLabel[user.role as string] || user.role}
             </span>
           </div>
         </div>
 
-        {/* Role-based Content */}
-        {user.role === "ADMIN" && <AdminPanel />}
-        {user.role === "PENGAJAR" && <PengajarPanel />}
-        {user.role === "PESERTA" && <PesertaPanel stats={pesertaStats} />}
+        <PesertaPanel stats={pesertaStats} />
       </main>
     </div>
   );
