@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { decrypt } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { Suspense } from "react";
 import LearningView from "./learning-view";
 
 interface Props {
@@ -57,18 +58,20 @@ export default async function CoursePage({ params }: Props) {
         </div>
       </header>
 
-      <LearningView
-        courseId={course.id}
-        courseTitle={course.judul}
-        pengajarNama={course.pengajar.nama}
-        modules={course.modules.map((m) => ({
-          id: m.id,
-          judul: m.judul,
-          urutan: m.urutan,
-          konten: m.konten,
-          taskInstruction: m.taskInstruction,
-        }))}
-      />
+      <Suspense fallback={<div className="flex items-center justify-center min-h-[50vh]"><p className="text-slate-500">Memuat...</p></div>}>
+        <LearningView
+          courseId={course.id}
+          courseTitle={course.judul}
+          pengajarNama={course.pengajar.nama}
+          modules={course.modules.map((m) => ({
+            id: m.id,
+            judul: m.judul,
+            urutan: m.urutan,
+            konten: m.konten,
+            taskInstruction: m.taskInstruction,
+          }))}
+        />
+      </Suspense>
     </div>
   );
 }

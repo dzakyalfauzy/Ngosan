@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 
 interface Modul {
@@ -45,6 +46,21 @@ export default function LearningView({ courseId, courseTitle, pengajarNama, modu
 
   const activeModule = modules[activeIndex];
   const isCurrentCompleted = completedModules.has(activeModule?.id);
+
+  // Baca query param ?module=xxx untuk langsung buka modul tertentu
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const moduleId = searchParams.get("module");
+    if (moduleId) {
+      const index = modules.findIndex((m) => m.id === moduleId);
+      if (index !== -1) {
+        setActiveIndex(index);
+        setTimeout(() => {
+          document.getElementById("task-section")?.scrollIntoView({ behavior: "smooth" });
+        }, 300);
+      }
+    }
+  }, [searchParams, modules]);
 
   // Fetch progress saat mount
   useEffect(() => {
@@ -156,13 +172,131 @@ export default function LearningView({ courseId, courseTitle, pengajarNama, modu
           <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2">Modul {activeModule.urutan} dari {modules.length}</p>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-6">{activeModule.judul}</h1>
 
-          <article className="prose prose-slate dark:prose-invert prose-headings:font-bold prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3 prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-2 prose-p:leading-relaxed prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-code:bg-slate-100 dark:prose-code:bg-slate-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:before:content-none prose-code:after:content-none prose-pre:bg-slate-900 dark:prose-pre:bg-slate-950 prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-slate-800 prose-pre:rounded-xl prose-pre:p-4 prose-pre:overflow-x-auto prose-li:marker:text-emerald-500 prose-blockquote:border-emerald-500 prose-blockquote:bg-emerald-50/50 dark:prose-blockquote:bg-emerald-900/10 prose-blockquote:rounded-r-lg prose-blockquote:py-1 prose-a:text-emerald-600 dark:prose-a:text-emerald-400 prose-strong:text-slate-900 dark:prose-strong:text-white max-w-none">
-            <ReactMarkdown>{activeModule.konten}</ReactMarkdown>
+          <article className="max-w-none">
+            <ReactMarkdown
+              components={{
+                h1: ({ children }) => (
+                  <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-10 mb-4 pb-2 border-b border-slate-200 dark:border-slate-700">
+                    {children}
+                  </h1>
+                ),
+                h2: ({ children }) => (
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white mt-8 mb-3">
+                    {children}
+                  </h2>
+                ),
+                h3: ({ children }) => (
+                  <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-100 mt-6 mb-2">
+                    {children}
+                  </h3>
+                ),
+                h4: ({ children }) => (
+                  <h4 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mt-4 mb-2">
+                    {children}
+                  </h4>
+                ),
+                p: ({ children }) => (
+                  <p className="text-base leading-relaxed text-slate-700 dark:text-slate-300 mb-4">
+                    {children}
+                  </p>
+                ),
+                pre: ({ children }) => (
+                  <div className="my-5 rounded-xl overflow-hidden border border-slate-700 dark:border-slate-600">
+                    <div className="bg-slate-800 px-4 py-2 flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full bg-red-500" />
+                      <span className="w-3 h-3 rounded-full bg-yellow-500" />
+                      <span className="w-3 h-3 rounded-full bg-green-500" />
+                      <span className="text-xs text-slate-400 ml-2 font-mono">code</span>
+                    </div>
+                    <pre className="bg-slate-950 p-5 overflow-x-auto text-sm leading-relaxed">
+                      {children}
+                    </pre>
+                  </div>
+                ),
+                code: ({ children, className }) => {
+                  const isInline = !className;
+                  if (isInline) {
+                    return (
+                      <code className="bg-slate-200 dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded text-sm font-mono">
+                        {children}
+                      </code>
+                    );
+                  }
+                  return (
+                    <code className={`${className} text-sm font-mono text-emerald-300`}>
+                      {children}
+                    </code>
+                  );
+                },
+                ul: ({ children }) => (
+                  <ul className="list-disc list-outside ml-6 mb-4 space-y-1.5 text-slate-700 dark:text-slate-300">
+                    {children}
+                  </ul>
+                ),
+                ol: ({ children }) => (
+                  <ol className="list-decimal list-outside ml-6 mb-4 space-y-1.5 text-slate-700 dark:text-slate-300">
+                    {children}
+                  </ol>
+                ),
+                li: ({ children }) => (
+                  <li className="leading-relaxed">
+                    {children}
+                  </li>
+                ),
+                blockquote: ({ children }) => (
+                  <blockquote className="my-4 pl-4 border-l-4 border-emerald-500 bg-emerald-50 dark:bg-emerald-900/10 rounded-r-lg py-3 pr-4 text-slate-700 dark:text-slate-300">
+                    {children}
+                  </blockquote>
+                ),
+                a: ({ href, children }) => (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
+                  >
+                    {children}
+                  </a>
+                ),
+                strong: ({ children }) => (
+                  <strong className="font-bold text-slate-900 dark:text-white">
+                    {children}
+                  </strong>
+                ),
+                em: ({ children }) => (
+                  <em className="italic text-slate-600 dark:text-slate-400">
+                    {children}
+                  </em>
+                ),
+                hr: () => (
+                  <hr className="my-8 border-t border-slate-200 dark:border-slate-700" />
+                ),
+                table: ({ children }) => (
+                  <div className="my-4 overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+                    <table className="w-full text-sm">
+                      {children}
+                    </table>
+                  </div>
+                ),
+                th: ({ children }) => (
+                  <th className="px-4 py-3 bg-slate-100 dark:bg-slate-800 text-left font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700">
+                    {children}
+                  </th>
+                ),
+                td: ({ children }) => (
+                  <td className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 text-slate-700 dark:text-slate-300">
+                    {children}
+                  </td>
+                ),
+              }}
+            >
+              {activeModule.konten}
+            </ReactMarkdown>
           </article>
 
           {/* Task Submission Card */}
           {activeModule.taskInstruction && (
-            <div className="mt-8 p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+            <div id="task-section" className="mt-8 p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
               <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">📋 Tugas Praktik</h3>
               <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 mb-4">
                 <p className="text-sm text-blue-800 dark:text-blue-300 whitespace-pre-wrap">{activeModule.taskInstruction}</p>

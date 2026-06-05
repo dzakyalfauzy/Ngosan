@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import LogoutButton from "../logout-button";
 import CreateCourseModal from "./create-course-modal";
+import EditCourseModal from "./edit-course-modal";
+import DeleteCourseButton from "./delete-course-button";
 
 export default async function PengajarDashboard() {
   const cookieStore = await cookies();
@@ -90,10 +92,13 @@ export default async function PengajarDashboard() {
             <p className="text-lg font-semibold text-slate-900 dark:text-white">📝 Koreksi Tugas</p>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Lihat dan nilai tugas peserta</p>
           </Link>
-          <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800">
+          <Link
+            href="/dashboard/pengajar/statistik"
+            className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-700 transition block"
+          >
             <p className="text-lg font-semibold text-slate-900 dark:text-white">📊 Statistik</p>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Pantau performa kelas Anda</p>
-          </div>
+          </Link>
         </div>
 
         {/* Action + List */}
@@ -144,13 +149,14 @@ export default async function PengajarDashboard() {
                     <span>📚 {course._count.modules} Modul</span>
                     <span>👥 {course._count.enrollments} Peserta</span>
                   </div>
-                  <span>
-                    {new Date(course.createdAt).toLocaleDateString("id-ID", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <EditCourseModal
+                      courseId={course.id}
+                      currentJudul={course.judul}
+                      currentDeskripsi={course.deskripsi}
+                    />
+                    <DeleteCourseButton courseId={course.id} courseName={course.judul} />
+                  </div>
                 </div>
               </Link>
             ))}

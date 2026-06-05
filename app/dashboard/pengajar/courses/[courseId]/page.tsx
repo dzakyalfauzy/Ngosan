@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import AddModuleModal from "./add-module-modal";
 import PublishButton from "./publish-button";
+import EditModuleModal from "./edit-module-modal";
+import DeleteModuleButton from "./delete-module-button";
 
 interface Props {
   params: Promise<{ courseId: string }>;
@@ -30,7 +32,7 @@ export default async function PengajarCoursePage({ params }: Props) {
   const course = await prisma.course.findFirst({
     where: { id: courseId, pengajarId: user.id },
     include: {
-      modules: { orderBy: { urutan: "asc" } },
+      modules: { orderBy: { urutan: "asc" }, select: { id: true, judul: true, urutan: true, konten: true, quizPassword: true, taskInstruction: true } },
       _count: { select: { enrollments: true } },
     },
   });
@@ -105,22 +107,35 @@ export default async function PengajarCoursePage({ params }: Props) {
                 className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:border-blue-300 dark:hover:border-blue-700 transition"
               >
                 <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 flex-1 min-w-0">
                     <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 flex items-center justify-center text-sm font-bold">
                       {modul.urutan}
                     </span>
-                    <div>
+                    <div className="min-w-0">
                       <h3 className="font-semibold text-slate-900 dark:text-white">
                         {modul.judul}
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
                         {modul.konten.substring(0, 120)}...
                       </p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="text-xs text-slate-400 dark:text-slate-500">🔑 {modul.quizPassword}</span>
+                        {modul.taskInstruction && (
+                          <span className="text-xs bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">📋 Ada Tugas</span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <span className="text-xs text-slate-400 dark:text-slate-500 flex-shrink-0 ml-4">
-                    🔑 {modul.quizPassword}
-                  </span>
+                  <div className="flex items-center gap-1 flex-shrink-0 ml-4">
+                    <EditModuleModal
+                      moduleId={modul.id}
+                      currentJudul={modul.judul}
+                      currentKonten={modul.konten}
+                      currentQuizPassword={modul.quizPassword}
+                      currentTaskInstruction={modul.taskInstruction}
+                    />
+                    <DeleteModuleButton moduleId={modul.id} moduleName={modul.judul} />
+                  </div>
                 </div>
               </div>
             ))}

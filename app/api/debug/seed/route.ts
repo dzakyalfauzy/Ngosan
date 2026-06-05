@@ -287,6 +287,7 @@ Flexbox adalah sistem layout untuk menyusun elemen dalam **satu baris atau satu 
         },
         {
           judul: "CSS Grid & Project Akhir", urutan: 5, courseId: html.id, quizPassword: "grid_layout_king",
+          taskInstruction: "Buatlah landing page responsif untuk portfolio pribadi menggunakan HTML dan CSS (Flexbox + Grid).\n\nPersyaratan:\n1. Gunakan semantic HTML (header, main, section, footer)\n2. Buat minimal 3 section: Hero, About, Projects\n3. Gunakan CSS Grid untuk layout card project\n4. Buat responsif di mobile dan desktop\n5. Push ke GitHub dan deploy di Vercel/Netlify",
           konten: `## CSS Grid: Layout Dua Dimensi
 
 Grid memungkinkan layout **baris dan kolom** sekaligus.
@@ -627,6 +628,7 @@ const [users, posts] = await Promise.all([
         },
         {
           judul: "DOM Manipulation", urutan: 5, courseId: js.id, quizPassword: "dom_master_99",
+          taskInstruction: "Buatlah aplikasi To-Do List interaktif menggunakan vanilla JavaScript dan DOM Manipulation.\n\nPersyaratan:\n1. Bisa menambah, menghapus, dan menandai tugas selesai\n2. Gunakan event delegation untuk efisiensi\n3. Simpan data ke localStorage agar persist setelah refresh\n4. Tambahkan fitur filter (Semua, Selesai, Belum Selesai)\n5. Push ke GitHub dan deploy di Vercel/Netlify",
           konten: `## Apa itu DOM?
 
 DOM (Document Object Model) adalah **representasi struktur HTML sebagai objek tree** yang bisa dimanipulasi JavaScript.
@@ -864,6 +866,7 @@ function TodoList({ todos }) {
         },
         {
           judul: "State & useEffect", urutan: 3, courseId: react.id, quizPassword: "state_hook_wizard",
+          taskInstruction: "Buatlah aplikasi Pencarian Film menggunakan React dengan useState dan useEffect.\n\nPersyaratan:\n1. Gunakan OMDb API (https://www.omdbapi.com/) untuk data film\n2. Buat fitur search dengan debounce 500ms\n3. Tampilkan hasil dalam grid card (poster, judul, tahun)\n4. Tambahkan loading state dan error handling\n5. Push ke GitHub dan deploy di Vercel",
           konten: `## useState Hook
 
 \`\`\`jsx

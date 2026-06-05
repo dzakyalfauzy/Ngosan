@@ -83,7 +83,7 @@ export default function TugasPage() {
                   {pending.map((task) => (
                     <Link
                       key={task.moduleId}
-                      href={`/dashboard/courses/${task.courseId}`}
+                      href={`/dashboard/courses/${task.courseId}?module=${task.moduleId}`}
                       className="block bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:border-blue-300 dark:hover:border-blue-700 transition"
                     >
                       <div className="flex items-start justify-between">

@@ -56,6 +56,13 @@ export default async function SubmissionsPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <Link
+          href="/dashboard/pengajar"
+          className="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition mb-6 inline-block"
+        >
+          ← Kembali ke Dashboard Pengajar
+        </Link>
+
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Koreksi Tugas</h1>

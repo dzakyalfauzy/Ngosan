@@ -163,16 +163,23 @@ function PesertaPanel({ stats }: { stats: PesertaStats }) {
       </div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Link
           href="/dashboard/tugas"
           className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-700 transition block"
         >
           <p className="text-lg font-semibold text-slate-900 dark:text-white">📝 Tugas & Kuis</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Kerjakan tugas dan lihat nilai</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Kerjakan tugas dari modul</p>
+        </Link>
+        <Link
+          href="/dashboard/tasks"
+          className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-700 transition block"
+        >
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">📋 Riwayat & Nilai</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Lihat tugas yang sudah dikumpulkan</p>
         </Link>
         <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800">
-          <p className="text-lg font-semibold text-slate-900 dark:text-white">📊 Progress Belajar</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">📊 Progress</p>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Rata-rata: {stats.progressRata}%</p>
         </div>
       </div>
