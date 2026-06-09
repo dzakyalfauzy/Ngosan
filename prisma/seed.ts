@@ -17,12 +17,15 @@ async function main() {
   }
   console.log(`👨‍🏫 Pengajar: ${pengajar.nama} (${pengajar.email})`);
 
-  await prisma.taskSubmission.deleteMany({});
-  await prisma.moduleProgress.deleteMany({});
-  await prisma.enrollment.deleteMany({});
-  await prisma.module.deleteMany({});
-  await prisma.course.deleteMany({});
-  console.log("🗑️  Data lama dihapus.");
+  // Cek apakah kelas sudah ada (hindari duplikasi)
+  const existingCourse = await prisma.course.findFirst({
+    where: { judul: "Mastering React.js & Tailwind CSS v4 untuk Pemula" },
+  });
+  if (existingCourse) {
+    console.log("⚠️  Kelas sudah ada, skip pembuatan. Gunakan seed-backend.ts atau seed-advance.ts untuk kelas baru.");
+    await prisma.$disconnect();
+    return;
+  }
 
   // ============================================================
   // KELAS: Mastering React.js & Tailwind CSS v4 untuk Pemula
